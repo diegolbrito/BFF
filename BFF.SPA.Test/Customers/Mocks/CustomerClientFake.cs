@@ -23,5 +23,6 @@ namespace BFF.SPA.Test.Customers.Mocks
         };
         #endregion
         public Task<Customer> GetCustomerByIdAsync(string id) => Task.FromResult(Customers.FirstOrDefault(p => p.Id == id));
+        public Task<bool> HealthCheckAsync() => Task.FromResult(true);
     }
 }

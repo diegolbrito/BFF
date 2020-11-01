@@ -16,11 +16,11 @@ namespace BFF.SPA.Services.Shopping.Clients
         public OrderClient(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            _httpClient.BaseAddress = new Uri("https://example.com.br/v1/orders");
+            _httpClient.BaseAddress = new Uri("https://example.com.br/v1/");
         }
         public async Task<List<Order>> GetOrdersByCustomerAsync(string customerId)
         {
-            var response = await _httpClient.GetAsync($"?customer={customerId}");
+            var response = await _httpClient.GetAsync($"orders?customer={customerId}");
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 using (var content = await response.Content.ReadAsStreamAsync())
@@ -30,5 +30,6 @@ namespace BFF.SPA.Services.Shopping.Clients
             }
             return default;
         }
+        public Task<bool> HealthCheckAsync() => Task.FromResult(_httpClient.GetAsync("hc").Result.IsSuccessStatusCode);
     }
 }

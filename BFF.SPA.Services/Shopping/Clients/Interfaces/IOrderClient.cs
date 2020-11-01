@@ -7,5 +7,6 @@ namespace BFF.SPA.Services.Shopping.Clients.Interfaces
     public interface IOrderClient
     {
         Task<List<Order>> GetOrdersByCustomerAsync(string customerId);
+        Task<bool> HealthCheckAsync();
     }
 }

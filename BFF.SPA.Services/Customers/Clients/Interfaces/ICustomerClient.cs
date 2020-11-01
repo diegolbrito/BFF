@@ -6,5 +6,6 @@ namespace BFF.SPA.Services.Customers.Clients.Interfaces
     public interface ICustomerClient
     {
         Task<Customer> GetCustomerByIdAsync(string id);
+        Task<bool> HealthCheckAsync();
     }
 }

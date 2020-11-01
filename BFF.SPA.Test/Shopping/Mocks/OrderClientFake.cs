@@ -45,5 +45,6 @@ namespace BFF.SPA.Test.Shopping.Mocks
         #endregion
 
         public Task<List<Order>> GetOrdersByCustomerAsync(string customerId) => Task.FromResult(Orders.Where(p => p.CustomerId == customerId).ToList());
+        public Task<bool> HealthCheckAsync() => Task.FromResult(true);
     }
 }

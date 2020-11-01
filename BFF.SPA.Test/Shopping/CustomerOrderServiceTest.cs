@@ -2,6 +2,8 @@
 using BFF.SPA.Services.Shopping.Services.Interfaces;
 using BFF.SPA.Test.Customers.Mocks;
 using BFF.SPA.Test.Shopping.Mocks;
+using Microsoft.Extensions.Logging;
+using Moq;
 using System.Linq;
 using Xunit;
 
@@ -12,7 +14,8 @@ namespace BFF.SPA.Test.Shopping
         private readonly ICustomerOrderService _service;
         public CustomerOrderServiceTest()
         {
-            _service = new CustomerOrderService(new CustomerClientFake(), new OrderClientFake());
+            var loggerMock = new Mock<ILogger<CustomerOrderService>>();
+            _service = new CustomerOrderService(loggerMock.Object, new CustomerClientFake(), new OrderClientFake());
         }
 
         [Theory]

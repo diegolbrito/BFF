@@ -5,6 +5,8 @@ using BFF.SPA.Services.Shopping.Clients.Interfaces;
 using BFF.SPA.Services.Shopping.Factory;
 using BFF.SPA.Services.Shopping.Services.Interfaces;
 using BFF.SPA.Services.Shopping.ViewModels;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,11 +14,16 @@ namespace BFF.SPA.Services.Shopping.Services
 {
     public class CustomerOrderService : ICustomerOrderService
     {
+        private readonly ILogger<CustomerOrderService> _logger;
         private readonly ICustomerClient _customerClient;
         private readonly IOrderClient _orderClient;
 
-        public CustomerOrderService(ICustomerClient customerClient, IOrderClient orderClient)
+        public CustomerOrderService(
+            ILogger<CustomerOrderService> logger,
+            ICustomerClient customerClient, 
+            IOrderClient orderClient)
         {
+            _logger = logger;
             _customerClient = customerClient;
             _orderClient = orderClient;
         }
@@ -24,26 +31,34 @@ namespace BFF.SPA.Services.Shopping.Services
         {
             var response = new ServiceResponse<CustomerOrderListVM>();
 
-            if (string.IsNullOrWhiteSpace(customerId))
+            try
             {
-                response.AddNotification("customerId is required");
-                return response;
+                if (string.IsNullOrWhiteSpace(customerId))
+                {
+                    response.AddNotification("customerId is required");
+                    return response;
+                }
+
+                var customer = await _customerClient.GetCustomerByIdAsync(customerId);
+                var orders = await _orderClient.GetOrdersByCustomerAsync(customerId);
+
+                if (customer is null)
+                {
+                    response.AddNotification($"customer {customerId} not found");
+                    return response;
+                }
+
+                response.Data = new CustomerOrderListVM
+                {
+                    Orders = orders?.Select(p => OrderFactory.Create(p))?.ToList(),
+                    Customer = CustomerFactory.Create(customer)
+                };
             }
-
-            var customer = await _customerClient.GetCustomerByIdAsync(customerId);
-            var orders = await _orderClient.GetOrdersByCustomerAsync(customerId);
-
-            if (customer is null)
+            catch (Exception ex)
             {
-                response.AddNotification($"customer {customerId} not found");
-                return response;
+                _logger.LogError(ex, ex.Message);
+                response.AddNotification("unexpected error");
             }
-
-            response.Data = new CustomerOrderListVM
-            {
-                Orders = orders?.Select(p => OrderFactory.Create(p))?.ToList(),
-                Customer = CustomerFactory.Create(customer)
-            };
 
             return response;
         }

@@ -15,11 +15,11 @@ namespace BFF.SPA.Services.Customers.Clients
         public CustomerClient(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            _httpClient.BaseAddress = new Uri("https://example.com.br/v1/customers");
+            _httpClient.BaseAddress = new Uri("https://example.com.br/v1/");
         }
         public async Task<Customer> GetCustomerByIdAsync(string id)
         {
-            var response = await _httpClient.GetAsync($"/{id}");
+            var response = await _httpClient.GetAsync($"customers/{id}");
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 using (var content = await response.Content.ReadAsStreamAsync())
@@ -29,5 +29,7 @@ namespace BFF.SPA.Services.Customers.Clients
             }
             return default;
         }
+
+        public Task<bool> HealthCheckAsync() => Task.FromResult(_httpClient.GetAsync("hc").Result.IsSuccessStatusCode);
     }
 }
