@@ -38,8 +38,8 @@ namespace BFF.SPA
 
             services.AddTransient<ICustomerOrderService, CustomerOrderService>();
 
-            services.AddHealthChecks().AddCheck<CustomerHealthCheck>("customer service");
-            services.AddHealthChecks().AddCheck<OrderHealthCheck>("order service");
+            services.AddHealthChecks().AddCheck<CustomerHealthCheck>("customer");
+            services.AddHealthChecks().AddCheck<OrderHealthCheck>("order");
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
