@@ -28,6 +28,7 @@ namespace BFF.SPA.Services.Shopping.Factory
             return entity is object? new OrderVM
             {
                 Number = entity.Number,
+                CustomerId = entity.CustomerId,
                 Date = entity.Date,
                 Items = entity.Items?.Where(p => p is object)?.Select(i => Create(i))?.ToList()
             } : default;

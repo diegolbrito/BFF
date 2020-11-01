@@ -6,6 +6,7 @@ namespace BFF.SPA.Services.Shopping.ViewModels
     public class OrderVM
     {
         public int Number { get; set; }
+        public string CustomerId { get; set; }
         public DateTime Date { get; set; }
         public List<OrderItemVM> Items { get; set; }
     }

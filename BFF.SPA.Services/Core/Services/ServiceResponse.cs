@@ -7,6 +7,7 @@ namespace BFF.SPA.Services.Core.Services
     {
         public List<string> Notifications { get; set; }
         public T Data { get; set; }
+        public ServiceResponse() => Notifications = new List<string>();
         public void AddNotification(params string[] notification) => Notifications.AddRange(notification?.Where(p => !string.IsNullOrWhiteSpace(p)));
     }
 }

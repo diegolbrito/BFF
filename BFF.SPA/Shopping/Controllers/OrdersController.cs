@@ -6,18 +6,18 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BFF.SPA.Shopping.Controllers
 {
-    [Route("v1/[controller]")]
+    [Route("v1/orders")]
     [ApiController]
-    public class ShoppingController : ControllerBase
+    public class OrdersController : ControllerBase
     {
         private readonly ICustomerOrderService _service;
 
-        public ShoppingController(ICustomerOrderService service)
+        public OrdersController(ICustomerOrderService service)
         {
             _service = service;
         }
 
-        [HttpGet("{customerId}")]
+        [HttpGet("customer/{customerId}")]
         public async Task<ServiceResponse<CustomerOrderListVM>> GetOrdersByCustomerAsync(string customerId)
         {
             return await _service.GetOrdersByCustomerAsync(customerId);

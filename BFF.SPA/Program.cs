@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using System;
+using System.IO;
 
 namespace BFF.SPA
 {
@@ -13,8 +14,10 @@ namespace BFF.SPA
             var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? Environments.Development;
 
             var configuration = new ConfigurationBuilder()
-               .AddJsonFile("appsettings.json", false, true)
-               .AddJsonFile($"appsetings.{environment}.json", optional: true, reloadOnChange: true)
+               .SetBasePath(Directory.GetCurrentDirectory())
+               .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+               .AddJsonFile($"appsettings.{environment}.json", optional: false, reloadOnChange: true)
+               .AddEnvironmentVariables()
                .Build();
 
             Log.Logger = new LoggerConfiguration()
@@ -22,7 +25,19 @@ namespace BFF.SPA
                 .Enrich.FromLogContext()
                 .CreateLogger();
 
-            CreateHostBuilder(args).Build().Run();
+            try
+            {
+                Log.Information("Starting web host");
+                CreateHostBuilder(args).Build().Run();
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "Host terminated unexpectedly");
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -30,7 +45,7 @@ namespace BFF.SPA
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                    webBuilder.UseSerilog();
-                });
+                })
+                .UseSerilog();
     }
 }

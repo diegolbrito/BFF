@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
+using Serilog;
 using System;
 using System.Linq;
 using System.Net.Mime;
@@ -47,6 +48,12 @@ namespace BFF.SPA
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseHsts();
+            }
+
+            app.UseSerilogRequestLogging();
 
             app.UseRouting();
 
