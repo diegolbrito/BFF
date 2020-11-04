@@ -1,5 +1,7 @@
 ﻿using BFF.SPA.Services.Customers.Clients.Interfaces;
 using BFF.SPA.Services.Customers.Models;
+using BFF.SPA.Services.Customers.Settings;
+using Microsoft.Extensions.Options;
 using System;
 using System.Net;
 using System.Net.Http;
@@ -11,11 +13,13 @@ namespace BFF.SPA.Services.Customers.Clients
     public class CustomerClient : ICustomerClient
     {
         private readonly HttpClient _httpClient;
+        private readonly CustomerSettings _settings;
 
-        public CustomerClient(HttpClient httpClient)
+        public CustomerClient(HttpClient httpClient, IOptions<CustomerSettings> settings)
         {
             _httpClient = httpClient;
-            _httpClient.BaseAddress = new Uri("https://example.com.br/v1/");
+            _settings = settings.Value;
+            _httpClient.BaseAddress = new Uri(_settings.BaseAddress);
         }
         public async Task<Customer> GetCustomerByIdAsync(string id)
         {

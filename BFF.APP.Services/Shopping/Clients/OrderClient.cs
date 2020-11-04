@@ -1,5 +1,7 @@
 ﻿using BFF.APP.Services.Shopping.Clients.Interfaces;
 using BFF.APP.Services.Shopping.Models;
+using BFF.APP.Services.Shopping.Settings;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -12,11 +14,13 @@ namespace BFF.APP.Services.Shopping.Clients
     public class OrderClient : IOrderClient
     {
         private readonly HttpClient _httpClient;
+        private readonly OrderSettings _settings;
 
-        public OrderClient(HttpClient httpClient)
+        public OrderClient(HttpClient httpClient, IOptions<OrderSettings> settings)
         {
             _httpClient = httpClient;
-            _httpClient.BaseAddress = new Uri("https://example.com.br/v1/");
+            _settings = settings.Value;
+            _httpClient.BaseAddress = new Uri(_settings.BaseAddress);
         }
         public async Task<List<Order>> GetOrdersByCustomerAsync(string customerId)
         {

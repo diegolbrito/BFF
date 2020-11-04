@@ -1,10 +1,12 @@
 using BFF.APP.HealthChecks;
 using BFF.APP.Services.Customers.Clients;
 using BFF.APP.Services.Customers.Clients.Interfaces;
+using BFF.APP.Services.Customers.Settings;
 using BFF.APP.Services.Shopping.Clients;
 using BFF.APP.Services.Shopping.Clients.Interfaces;
 using BFF.APP.Services.Shopping.Services;
 using BFF.APP.Services.Shopping.Services.Interfaces;
+using BFF.APP.Services.Shopping.Settings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
@@ -33,11 +35,11 @@ namespace BFF.APP
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.Configure<CustomerSettings>(Configuration.GetSection("CustomerSettings"));
+            services.Configure<OrderSettings>(Configuration.GetSection("OrderSettings"));
             services.AddHttpClient<ICustomerClient, CustomerClient>();
             services.AddHttpClient<IOrderClient, OrderClient>();
-
             services.AddTransient<ICustomerOrderService, CustomerOrderService>();
-
             services.AddHealthChecks().AddCheck<CustomerHealthCheck>("customer");
             services.AddHealthChecks().AddCheck<OrderHealthCheck>("order");
         }
